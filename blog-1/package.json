@@ -4,7 +4,7 @@
   "description": "",
   "main": "bin/www.js",
   "scripts": {
-    "watch":"nodemon ./bin/www.js",
+    "watch": "nodemon ./bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,5 +14,7 @@
     "cross-env": "^7.0.3",
     "nodemon": "^2.0.12"
   },
-  "dependencies": {}
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
 }

@@ -20,6 +20,7 @@ const getList = (author, keyword) => {
 
 const getDetail = (id) => {
     //先返回假数据
+    console.log(id);
     return{
         id:1,
         title:"titleA",
