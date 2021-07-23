@@ -4,7 +4,7 @@ const mysql = require('mysql')
 const con = mysql.createConnection({
     host: 'localhost',
     user:'root',
-    password:'Mysql_2021',
+    password:'',
     port:'3306',
     database:'myblog'
 })
@@ -13,7 +13,7 @@ const con = mysql.createConnection({
 con.connect();
 
 // 执行 sql 语句
-const sql = 'select * from users;'
+const sql = `select * from users;`
 con.query(sql, (err, result) => {
     if (err) {
         console.error(err)
@@ -21,6 +21,6 @@ con.query(sql, (err, result) => {
     }
     console.log(result)
 })
-
+console.log("Ich lebe noch")
 // 关闭连接
 con.end()
