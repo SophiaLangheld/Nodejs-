@@ -1,8 +1,37 @@
+const { resolveCaa } = require('dns')
 const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 
-const serverHandle = ((req, res) => {
+//用于处理 post data
+const getPostData = (req) => {
+    const promise = new Promise((resolve, reject) =>{
+        if(req.method !== 'POST') {
+            resolve({})
+            return
+        }
+        if(req.headers['content-type'] !== 'application/json'){
+            resolve({})
+            return
+        }
+        let postData = ''
+        req.on('data', chunk => {
+            postData += chunk.toString()
+        })
+        req.on('end', () =>{
+            if (!postData){
+                resolve({})
+                return
+            }
+            resolve(
+                JSON.parse(postData)
+            )
+        })
+    })
+    return promise
+}
+
+const serverHandle = (req, res) => {
     //return Datei JSON
     res.setHeader('Content-type', 'application/json')
 
@@ -13,8 +42,9 @@ const serverHandle = ((req, res) => {
     //query
     req.query = querystring.parse(url.split('?')[1])
 
-    /*getPostData(req).then(postData =>{
-        req.body = postData*/
+    // 处理 post Data
+    getPostData(req).then(postData => {
+        req.body = postData
 
         // handle Blog routing
         /*const blogData = handleBlogRouter(req, res)
@@ -48,10 +78,8 @@ const serverHandle = ((req, res) => {
         res.write("404 Not Found\n")
         res.end()
 
-    /*})*/
-
-
-});
+    })
+};
 
 module.exports = serverHandle
 
