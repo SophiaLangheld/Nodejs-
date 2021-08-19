@@ -18,9 +18,9 @@ const handleUserRouter = (req, res) => {
     }*/
 
     //Anmelden 登录  Zum Test bei GET
-    if (method === 'GET' && req.path === '/api/user/login'){
-        //const { username, password} = req.body
-        const { username, password} = req.query
+    if (method === 'POST' && req.path === '/api/user/login'){
+        const { username, password} = req.body
+        //const { username, password} = req.query // if (method === 'GET' && req.path === '/api/user/login'){
         const result = login(username, password)
         return result.then(data => {
             if(data.username){
@@ -38,7 +38,7 @@ const handleUserRouter = (req, res) => {
     }
 
     //登录验证的测试  anmelden test
-    if(method === 'GET' && req.path === '/api/user/login-test'){
+    /*if(method === 'GET' && req.path === '/api/user/login-test'){
         if(req.session.username){
             return Promise.resolve(
                 new SuccessModel({
@@ -49,7 +49,7 @@ const handleUserRouter = (req, res) => {
         return Promise.resolve(
             new ErrorModel('尚未登录 noch nicht angemeldet')
         )
-    }
+    }*/
 }
 
 module.exports = handleUserRouter
