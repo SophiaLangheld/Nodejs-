@@ -1,7 +1,7 @@
 const {exec} = require('../db/mysql')
 
 
-const loginCheck = (username, password) => {
+const login = (username, password) => {
     //先使用假数据
     /*if(username === 'zhangsan' && password === '123'){
         return true
@@ -17,5 +17,5 @@ const loginCheck = (username, password) => {
 }
 
 module.exports = {
-    loginCheck
+    login
 }
