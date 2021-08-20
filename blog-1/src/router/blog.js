@@ -21,10 +21,21 @@ const handleBlogRouter = (req, res) => {
 
     // Blog List
     if (method === 'GET' && req.path === '/api/blog/list'){
-        const author = req.query.author || ''
+        let author = req.query.author || ''
         const keyword = req.query.keyword || ''
         //const listData = getList(author, keyword)
         //return new SuccessModel(listData)
+
+        if(req.query.isadmin){
+            //管理员界面
+            const loginCheckResult = loginCheck(req)
+            if (loginCheckResult){
+                return loginCheckResult
+            }
+            //强制查询自己的博客
+            author = req.session.username
+        }
+
         const result = getList(author, keyword)
         return result.then(listData => {
             return new SuccessModel(listData)
@@ -48,7 +59,7 @@ const handleBlogRouter = (req, res) => {
         const loginCheckResult = loginCheck(req)
         if(loginCheckResult){
             //如果这里有值，说明尚未登录
-            return loginCheck
+            return loginCheckResult
         }
 
         //req.body.author = 'Jose' // 假数据， 待开发登录时再改成真实数据
@@ -65,7 +76,7 @@ const handleBlogRouter = (req, res) => {
         const loginCheckResult = loginCheck(req)
         if(loginCheckResult){
             //如果这里有值，说明尚未登录
-            return loginCheck
+            return loginCheckResult
         }
 
         const result = updateBlog(id, req.body)
@@ -84,7 +95,7 @@ const handleBlogRouter = (req, res) => {
         const loginCheckResult = loginCheck(req)
         if(loginCheckResult){
             //如果这里有值，说明尚未登录
-            return loginCheck
+            return loginCheckResult
         }
 
         //const author = 'Jose' // 假数据， 待开发登录时再改成真实数据
