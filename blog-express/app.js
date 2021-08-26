@@ -1,14 +1,17 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var fs = require('fs')
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const session = require('express-session')
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session)
 
 //var indexRouter = require('./routes/index');
 //var usersRouter = require('./routes/users');
 const blogRouter = require('./routes/blog');
 const userRouter = require('./routes/user');
+
 
 var app = express();
 
@@ -18,11 +21,30 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 */
 
-app.use(logger('dev'));  //日志
+//app.use(logger('dev'));  //日志
+const ENV = process.env.NODE_ENV
+if(ENV !== 'production'){
+  //开发环境 测试环境
+  app.use(logger('dev'));
+} else {
+  //线上环境
+  const logFileName = path.join(__dirname,'logs', 'access.log')
+  const writeStream = fs.createWriteStream(logFileName, {
+    flags: 'a'
+  })
+  app.use(logger('combined', {
+    stream: writeStream
+  }))
+};
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public'))); //静态文件
+
+const redisClient = require('./db/redis')
+const sessionStore = new RedisStore({
+  client: redisClient
+})
 
 app.use(session({
   secret: 'WJiol#23123_',
@@ -30,13 +52,17 @@ app.use(session({
     //path: '/', //默认配置
     // httpOnly: true, //默认配置
     maxAge: 24 * 60 * 60 * 1000
-  }
+  },
+  store: sessionStore,
+  saveUninitialized: true,
+  resave: true
 }))
 
 //app.use('/', indexRouter);      //注册
 //app.use('/users', usersRouter); //注册
 app.use('/api/blog', blogRouter);
 app.use('/api/user', userRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

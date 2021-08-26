@@ -11,7 +11,8 @@ if (env === 'dev') {  //开发环境下
         user:'root',
         password:'',
         port:'3306',
-        database:'myblog'
+        database:'myblog'  //24.08
+        //database:'bestand'
     }
 
     // redis
